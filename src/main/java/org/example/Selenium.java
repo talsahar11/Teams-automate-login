@@ -1,6 +1,7 @@
 package org.example;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -38,15 +39,29 @@ public abstract class Selenium {
     protected abstract void close() ;
 
     protected void printPageFields(){
-//        List<WebElement> allElements = driver.findElements(By.cssSelector("*"));
-//        for (WebElement element : allElements) {
-//            System.out.println(element.getText());
-//        }
 
-        java.util.List<WebElement> allFields = driver.findElements(By.tagName("input"));
-        for (WebElement field : allFields) {
-            System.out.println("Field Name: " + field.getAttribute("name") + ", Field Value: " + field.getAttribute("value") +
-                    ", Type: " + field.getAttribute("type") + ", ID: " + field.getAttribute("id"));
+        String separator = "-----------------------------------------------------------------------------------" ;
+        java.util.List<WebElement> allFields = driver.findElements(By.tagName("*"));
+        System.out.println(separator);
+        System.out.println(separator);
+        for (WebElement element : allFields) {
+            System.out.println("Tag Name: " + element.getTagName() +
+                    ", Text: " + element.getText() +
+                    ", Attribute (ID): " + element.getAttribute("id") +
+                    ", Attribute (Class): " + element.getAttribute("class"));
+        }
+
+
+        System.out.println(separator);
+        System.out.println(separator);
+    }
+
+    void printDifferences(List<WebElement> lastList){
+        List<WebElement> allElements = driver.findElements(By.cssSelector("*"));
+        for(WebElement webElement: allElements){
+            if(!lastList.contains(webElement)){
+                System.out.println(webElement.getText());
+            }
         }
     }
 }

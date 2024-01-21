@@ -68,19 +68,34 @@ public class TeamsSelenium extends Selenium{
     @Override
     public void login() throws InterruptedException {
         printPageFields();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(1000));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.name("loginfmt")));
         passUsernamePage() ;
-        Thread.sleep(5000);
-        passPasswordPage() ;
-        Thread.sleep(3000);
-        passThirdPage();
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(40));
-        WebElement searchBox = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("searchInputField")));
-        searchBox.sendKeys(teammateName);
+
         Thread.sleep(1000);
+        wait = new WebDriverWait(driver, Duration.ofSeconds(1000));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.name("passwd")));
+        passPasswordPage() ;
+
+        Thread.sleep(3000);
+        wait = new WebDriverWait(driver, Duration.ofSeconds(1000));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("idSIButton9")));
+
+        passThirdPage();
+        wait = new WebDriverWait(driver, Duration.ofSeconds(1000));
+        WebElement searchBox = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("searchInputField")));
+        for(int i = 0 ; i < teammateName.length() ; i++){
+            searchBox.sendKeys(teammateName.substring(i, i+1));
+            Thread.sleep(150);
+        }
+        Thread.sleep(5000);
         Actions actions = new Actions(driver);
-        actions.sendKeys(Keys.ARROW_DOWN) ;
-        actions.sendKeys(Keys.ENTER) ;
-         printPageFields();
+        actions.keyDown(Keys.ARROW_DOWN) ;
+        actions.keyDown(Keys.ENTER) ;
+        WebElement galiliElement1 = driver.findElement(By.id("angucomplete-custom")) ;
+        galiliElement1.click();
+//        WebElement galiliElement2 = driver.findElement(By.id("autosuggest-dropdown ng-hide")) ;
+//        galiliElement2.click();
     }
 
     private void passPasswordPage() {
