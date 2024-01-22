@@ -5,6 +5,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import javax.swing.*;
 import java.io.*;
@@ -16,7 +17,9 @@ public abstract class Selenium {
 
     protected String username, password, teammateName ;
     public Selenium() {
-        driver = new ChromeDriver() ;
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("use-fake-ui-for-media-stream");
+        driver = new ChromeDriver(options) ;
         loadConfigurations();
         openApplication();
         try {
