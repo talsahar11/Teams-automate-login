@@ -24,18 +24,23 @@ public abstract class Selenium {
     protected File config ;
 
     //-----Client type to know which side is needed (called\answerer)-----
-    protected ClientType clientType ;
+    protected Role role;
 
     //-----The fields to be loaded from the config file-----
     protected String username, password, teammateName ;
 
-    public Selenium(ClientType clientType) throws InterruptedException {
+
+    public Selenium(Role role) throws InterruptedException {
 
         //-----Vars initialization-----
-        this.clientType = clientType ;
-        driver = new ChromeDriver(allowCamera()) ;
+        this.role = role;
+        driver = new ChromeDriver(addOptions()) ;
 
-        loadConfigurations();
+        if(loadConfigurations() != 0){
+            while(createConfigurations() != 0){
+
+            };
+        }
         openApplication();
         login();
         act() ;
@@ -45,7 +50,7 @@ public abstract class Selenium {
      * act() method determines whether the call() or the answer() method will be called after the log in.
      */
     private void act(){
-        switch (clientType){
+        switch (role){
             case CALLER:
                 call();
                 break ;
@@ -61,12 +66,12 @@ public abstract class Selenium {
      * loadConfigurations will handle the loading of the config file, parsing it, and call the create
      * configurations method if the file does not exist.
      */
-    protected abstract void loadConfigurations() ;
+    protected abstract int loadConfigurations() ;
 
     /**
      * createConfiguration gets the details from the user input and writes a new config file with those details.
      */
-    protected abstract void createConfigurations() ;
+    protected abstract int createConfigurations() ;
 
     /**
      * openApplication will open the wanted app in the chrome browser.
@@ -84,9 +89,12 @@ public abstract class Selenium {
      * creates options for the chrome driver which enables camera and mic automatically
      * @return options to set to the driver.
      */
-    protected ChromeOptions allowCamera(){
+    protected ChromeOptions addOptions(){
         ChromeOptions options = new ChromeOptions();
+        //Allow camera automaticly
         options.addArguments("use-fake-ui-for-media-stream");
+        //Open with ssl keylogfile
+        options.addArguments("--ssl-key-log-file=" + "/home/ts/Desktop/keylog.txt");
         return options ;
     }
 

@@ -1,5 +1,5 @@
 package org.teams_zoom_automate_caller;
 
-public enum ClientType {
+public enum Role {
     CALLER, ANSWERER
 }

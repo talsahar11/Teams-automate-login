@@ -1,6 +1,6 @@
 package org.teams_zoom_automate_caller.teams;
 
-import org.teams_zoom_automate_caller.ClientType;
+import org.teams_zoom_automate_caller.Role;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
@@ -10,6 +10,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.teams_zoom_automate_caller.Selenium;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -18,47 +19,92 @@ import java.util.Random;
 
 public class TeamsSelenium extends Selenium {
 
-    public TeamsSelenium(ClientType clientType) throws InterruptedException {
-        super(clientType);
+    public TeamsSelenium(Role role) throws InterruptedException {
+        super(role);
     }
 
-    protected void loadConfigurations(){
+    protected int loadConfigurations(){
         config = new File("teamsConfig.txt") ;
         if(!config.exists()){
-            createConfigurations() ;
+            return -1 ;
         }else{
             try {
                 BufferedReader reader = new BufferedReader(new FileReader(config)) ;
                 username = reader.readLine() ;
                 password = reader.readLine() ;
-                if(clientType == ClientType.CALLER) {
-                    teammateName = reader.readLine();
+                if(username == null || password == null){
+                    return -1 ;
                 }
+                if(role == Role.CALLER) {
+                    teammateName = reader.readLine();
+                    if(teammateName == null){
+                        return -1 ;
+                    }
+                }
+                return 0 ;
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
     }
 
-    protected void createConfigurations() {
+    protected int createConfigurations() {
         try {
             config.createNewFile() ;
             BufferedWriter writer = new BufferedWriter(new FileWriter(config)) ;
             JOptionPane.showMessageDialog(null, "Hello, its your first time with Microsoft Teams here, please enter your details so we can connect you on the next times also :-) ");
             username = JOptionPane.showInputDialog("Please enter your mail:") ;
-            password = JOptionPane.showInputDialog("Please enter your password:") ;
+            // Create a password field
+            JPasswordField passwordField = new JPasswordField();
+            passwordField.setPreferredSize(new Dimension(200, 25)); // Set preferred size
 
-            writer.write(username+"\n");
-            writer.write(password+"\n");
+            // Create a panel to hold the password field
+            JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            panel.add(new JLabel("Enter password:"));
+            panel.add(passwordField);
 
-            if(clientType == ClientType.CALLER) {
+            // Set the preferred size for the panel
+            panel.setPreferredSize(new Dimension(250, 80)); // Set preferred size
+            passwordField.setFocusable(true);
+            // Show the JOptionPane with the password field
+            int result = JOptionPane.showConfirmDialog(
+                    null,
+                    panel,
+                    "Password Dialog",
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE
+            );
+
+            // Check if the user clicked OK
+            if (result == JOptionPane.OK_OPTION) {
+                // Retrieve the password from the password field
+                char[] tempPass = passwordField.getPassword();
+                password = new String(tempPass );
+
+            } else {
+                System.out.println("Password entry canceled");
+            }
+
+
+
+            if(role == Role.CALLER) {
                 teammateName = JOptionPane.showInputDialog("Please enter your friend's identifier (nickname, mail):");
+                if(teammateName == null){
+                    return -1 ;
+                }
                 writer.write(teammateName + "\n");
+            }
+            if(username == null || password == null) {
+                return -1;
+            }else {
+                writer.write(username + "\n");
+                writer.write(password + "\n");
             }
             writer.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return 0 ;
     }
 
     @Override
@@ -103,7 +149,7 @@ public class TeamsSelenium extends Selenium {
 
     private void waitForLogggedInPage() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(1000));
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("idSIButton9")));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("idSIButton9")));
     }
 
     private void passMainPage() throws InterruptedException {

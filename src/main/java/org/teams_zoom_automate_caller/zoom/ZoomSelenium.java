@@ -1,21 +1,21 @@
 package org.teams_zoom_automate_caller.zoom;
 
-import org.teams_zoom_automate_caller.ClientType;
+import org.teams_zoom_automate_caller.Role;
 import org.teams_zoom_automate_caller.Selenium;
 
 public class ZoomSelenium extends Selenium {
-    public ZoomSelenium(ClientType clientType) throws InterruptedException {
-        super(clientType);
+    public ZoomSelenium(Role role) throws InterruptedException {
+        super(role);
     }
 
     @Override
-    protected void loadConfigurations() {
-
+    protected int loadConfigurations() {
+        return 0 ;
     }
 
     @Override
-    protected void createConfigurations() {
-
+    protected int createConfigurations() {
+        return 0 ;
     }
 
     @Override
