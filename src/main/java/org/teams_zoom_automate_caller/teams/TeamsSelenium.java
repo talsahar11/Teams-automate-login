@@ -143,13 +143,13 @@ public class TeamsSelenium extends Selenium {
 
     private void passKeepLoggedInPage(){
         waitForLogggedInPage() ;
-        driver.findElement(By.id("idSIButton9")).click();
+        driver.findElement(By.id("declineButton")).click();
 
     }
 
     private void waitForLogggedInPage() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(1000));
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("idSIButton9")));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("declineButton")));
     }
 
     private void passMainPage() throws InterruptedException {
